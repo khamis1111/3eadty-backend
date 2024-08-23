@@ -26,11 +26,9 @@ const userInfoSchema = new mongoose.Schema({
     phone: Number,
     price: {
         type: Number,
-        min: 1,
     },
     paid: {
         type: Number,
-        min: 1,
     },
     restOfPrice: {
         type: Number,
@@ -79,6 +77,8 @@ const userInfoSchema = new mongoose.Schema({
         process: String,
         processDetails: String,
         price: Number,
+        paid: Number,
+        restOfPrice: Number,
         date: Date,
     }],
     recommendations: String, /* للتوصيات والنصائح */

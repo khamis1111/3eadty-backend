@@ -19,20 +19,19 @@ exports.addUserInfoValidation = [
         .isNumeric()
         .withMessage('Phone must be a number'),
     check('price')
-        .notEmpty()
-        .withMessage('price is required')
-        .isNumeric()
-        .withMessage('price must be a number'),
-    check('paid')
         .optional()
         .isNumeric()
-        .withMessage('Paid must be a number')
+        .withMessage('price must be a number')
         .custom((val, { req }) => {
-            if (val > req.body.price) {
-                throw new Error(`Paid must be Lower than Price`)
+            if (Number(val) < Number(req.body.paid)) {
+                throw new Error(`Price must be bigger than paid`)
             }
             return true
         }),
+    check('paid')
+        .optional()
+        .isNumeric()
+        .withMessage('Paid must be a number'),
     check('restOfPrice')
         .optional()
         .isNumeric()
@@ -51,12 +50,12 @@ exports.updateUserInfoValidation = [
     check('id')
         .isMongoId()
         .withMessage('Invalid User Id'),
-    check('paid')
+    check('price')
         .optional()
         .isNumeric()
-        .withMessage('Paid must be a number')
+        .withMessage('price must be a number')
         .custom((val, { req }) => {
-            if (val > req.body.price) {
+            if (Number(val) < Number(req.body.paid)) {
                 throw new Error(`Price must be bigger than paid`)
             }
             return true

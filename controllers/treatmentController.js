@@ -52,9 +52,58 @@ module.exports = {
     // @desc   Update Treatments Details
     // @Route  PUT /api/v1/treatments/:idDetails
     // @Access Private
-    updateTreatmentsDetails: handlersFactory.updateInModel(userInfoModel, 'treatmentsDetails', 'process processDetails price date'),
+    updateTreatmentsDetails: handlersFactory.updateInModel(userInfoModel, 'treatmentsDetails', 'process processDetails price paid restOfPrice date'),
     // @desc   Delete Treatments Details
     // @Route  DELETE /api/v1/treatments/:idDetails
     // @Access Private
     deleteTreatmentsDetails: handlersFactory.deleteInModel(userInfoModel, 'treatmentsDetails'),
+
+    filterObj: async (req, res, next) => {
+        const document = await userInfoModel.findById(req.params.id)
+        const detailsItem = document.treatmentsDetails.filter((data) => data._id.toString() === req.body.docId)
+        
+        if (req.body.price) {
+            // Calculate the sum
+            const sumPrice = document.price + Number(req.body.price);
+            document.price = sumPrice;
+
+            if (detailsItem.length > 0) {
+                const subPrice = document.price - detailsItem[0].price;
+                const subPaid = document.paid - detailsItem[0].paid;
+                document.price = subPrice;
+                document.paid = subPaid;
+            }
+
+            if (req.body.paid) {
+                const sumPaid = document.paid + Number(req.body.paid);
+                document.paid = sumPaid;
+                req.body.restOfPrice = req.body.price - req.body.paid
+                document.restOfPrice = document.price - document.paid
+            }
+
+            // Save the document
+            await document.save();
+        }
+        if (req.body.restOfPrice === 0) {
+            req.body.isPaid = true
+            req.body.paidAt = Date.now()
+        }
+        next()
+    },
+    filterObjDelete: async (req, res, next) => {
+        const document = await userInfoModel.findById(req.params.id)
+        const detailsItem = document.treatmentsDetails.filter((data) => data._id.toString() === req.body.docId)
+
+        if (req.body.docId) {
+            // Calculate the sub
+            const subPrice = document.price - detailsItem[0].price;
+            const subPaid = document.paid - detailsItem[0].paid;
+            document.price = subPrice;
+            document.paid = subPaid;
+            document.restOfPrice = document.price - document.paid
+            // Save the document
+            await document.save();
+        }
+        next()
+    },
 }

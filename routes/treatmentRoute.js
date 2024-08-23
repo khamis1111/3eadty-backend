@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { deleteTreatmentsPlan, updateTreatmentsPlan, addTreatmentsPlan, resizeImg, uploadSingleImg, addTreatmentsHistory, updateTreatmentsHistory, deleteTreatmentsHistory, addTreatmentsDetails, updateTreatmentsDetails, deleteTreatmentsDetails } = require('../controllers/treatmentController')
+const { deleteTreatmentsPlan, updateTreatmentsPlan, addTreatmentsPlan, resizeImg, uploadSingleImg, addTreatmentsHistory, updateTreatmentsHistory, deleteTreatmentsHistory, addTreatmentsDetails, updateTreatmentsDetails, deleteTreatmentsDetails, filterObj, filterObjDelete } = require('../controllers/treatmentController')
 const { addTreatmentsPlanValidation, updateTreatmentsPlanValidation, deleteTreatmentsPlanValidation, addTreatmentsHistoryValidation, updateTreatmentsHistoryValidation, deleteTreatmentsHistoryValidation, addTreatmentsDetailsValidation, updateTreatmentsDetailsValidation, deleteTreatmentsDetailsValidation } = require('../utils/validation/treatmentValidation')
 
 router.route('/plan/:id')
@@ -13,8 +13,8 @@ router.route('/history/:id')
     .delete(deleteTreatmentsHistoryValidation, deleteTreatmentsHistory)
 
 router.route('/details/:id')
-    .post(addTreatmentsDetailsValidation, addTreatmentsDetails)
-    .put(updateTreatmentsDetailsValidation, updateTreatmentsDetails)
-    .delete(deleteTreatmentsDetailsValidation, deleteTreatmentsDetails)
+    .post(filterObj, addTreatmentsDetailsValidation, addTreatmentsDetails)
+    .put(filterObj, updateTreatmentsDetailsValidation, updateTreatmentsDetails)
+    .delete(filterObjDelete, deleteTreatmentsDetailsValidation, deleteTreatmentsDetails)
 
 module.exports = router
