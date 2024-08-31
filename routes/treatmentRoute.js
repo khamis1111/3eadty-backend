@@ -1,6 +1,10 @@
 const router = require('express').Router()
+const { protectAuth, allowedTo } = require('../controllers/authController')
 const { deleteTreatmentsPlan, updateTreatmentsPlan, addTreatmentsPlan, resizeImg, uploadSingleImg, addTreatmentsHistory, updateTreatmentsHistory, deleteTreatmentsHistory, addTreatmentsDetails, updateTreatmentsDetails, deleteTreatmentsDetails, filterObj, filterObjDelete } = require('../controllers/treatmentController')
 const { addTreatmentsPlanValidation, updateTreatmentsPlanValidation, deleteTreatmentsPlanValidation, addTreatmentsHistoryValidation, updateTreatmentsHistoryValidation, deleteTreatmentsHistoryValidation, addTreatmentsDetailsValidation, updateTreatmentsDetailsValidation, deleteTreatmentsDetailsValidation } = require('../utils/validation/treatmentValidation')
+
+router.use(protectAuth(), allowedTo('admin'))
+
 
 router.route('/plan/:id')
     .post(addTreatmentsPlanValidation, addTreatmentsPlan)

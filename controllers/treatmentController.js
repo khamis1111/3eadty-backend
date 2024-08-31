@@ -61,7 +61,7 @@ module.exports = {
     filterObj: async (req, res, next) => {
         const document = await userInfoModel.findById(req.params.id)
         const detailsItem = document.treatmentsDetails.filter((data) => data._id.toString() === req.body.docId)
-        
+
         if (req.body.price) {
             // Calculate the sum
             const sumPrice = document.price + Number(req.body.price);

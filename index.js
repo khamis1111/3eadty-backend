@@ -34,21 +34,21 @@ app.use(xss())
 app.use(helmet());
 
 // Enable other domains to access myApp
-app.use(cors({path: '*'}));
+app.use(cors({ path: '*' }));
 app.options('*', cors());
 app.enable('trust proxy');
 
 // Compress all response
 app.use(compression())
 
-// const limiter = rateLimit({
-//     windowMs: 5 * 60 * 1000, // 5 minutes
-//     limit: 20, // Limit each IP to 20 requests per `window` (here, per 5 minutes)
-//     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-//     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-//     message: { status: "Fail", msg: `Too many requests have been made. Please wait 10 minutes` }
-// })
-// app.use('/api', limiter) /* use with all requests start with /api */
+const limiter = rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    limit: 5, // Limit each IP to 20 requests per `window` (here, per 5 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    message: { status: "Fail", msg: `Too many requests have been made. Please wait 10 minutes` }
+})
+app.use('/api/v1/auth', limiter) /* use with all requests start with /api */
 
 // Mongoose DB
 database()
